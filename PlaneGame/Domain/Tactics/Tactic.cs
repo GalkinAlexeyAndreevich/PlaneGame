@@ -41,23 +41,26 @@ public class Tactic(TacticType tactic)
          // все атакуют цель, которую указал командир команды (меняется каждый ход)
          case TacticType.CommanderOrder:
             _commanderTarget = GetRandomAlive(aliveEnemies);
-            if (_commanderTarget == null || !_commanderTarget.IsAlive)
+            if (_commanderTarget == null)
             {
                throw new InvalidOperationException("Не осталось живых врагов");
             }
             return _commanderTarget;
+         
          // атакуют самый сильный (с максимальным HP) танк
          case TacticType.HuntOnLeader:
             return aliveEnemies
                .OrderByDescending(p => p.Hp)
                .ThenByDescending(p => p.MaxHp)
                .First();
+         
          // атакуют самый слабый (с минимальным HP) танк
          case TacticType.Finishing:
             return aliveEnemies
                .OrderBy(p => p.Hp)
                .ThenBy(p => p.MaxHp)
                .First();
+         
          // все атакуют одного противника, пока он не уничтожен
          case TacticType.Concentration:
             if (_concentrationTarget == null || !_concentrationTarget.IsAlive)
