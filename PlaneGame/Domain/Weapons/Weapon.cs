@@ -11,28 +11,28 @@ public class Weapon(WeaponType type, int minDamage, int maxDamage, int baseAccur
     private int MaxDamage { get; } = maxDamage;
     private int BaseAccuracyPercent { get; } = baseAccuracyPercent;
     private int AccuracyPercent { get; } = accuracyPercent;
-    
+
     /// <summary>Самолёт, на котором установлено оружие. Устанавливается при экипировке.</summary>
     public Plane? Owner { get; internal set; }
-    
+
     private Ammunition? _ammunition;
 
-    private int _reloadStep; 
-    
-    public Weapon Clone() => new(Type,  MinDamage, MaxDamage, BaseAccuracyPercent, AccuracyPercent);
+    private int _reloadStep;
+
+    public Weapon Clone() => new(Type, MinDamage, MaxDamage, BaseAccuracyPercent, AccuracyPercent);
 
     internal void EquipAmmunition(Ammunition ammunition)
     {
         _ammunition = ammunition;
     }
-    
+
     internal void DoDamage(Plane enemyPlane, Plane[] allEnemies)
     {
-        if (Owner == null)
+        if (Owner is null)
         {
             throw new InvalidOperationException("Оружие не установлено на самолёт");
         }
-        if (_ammunition == null)
+        if (_ammunition is null)
         {
             throw new InvalidOperationException("Не экипированы боеприпасы");
         }
@@ -41,7 +41,7 @@ public class Weapon(WeaponType type, int minDamage, int maxDamage, int baseAccur
 
         // Крыльевые пушки стреляют по 2 выстрела
         var shotsCount = Type == WeaponType.WingGuns ? 2 : 1;
-        
+
         for (var i = 0; i < shotsCount; i++)
         {
             if (!IsHit(enemyPlane))
@@ -49,22 +49,22 @@ public class Weapon(WeaponType type, int minDamage, int maxDamage, int baseAccur
                 Console.WriteLine($"{attacker.GetName()} промахнулся по {enemyPlane.GetName()}");
                 continue;
             }
-            
+
             var damageWeapon = Random.Shared.Next(MinDamage, MaxDamage);
             var damage = damageWeapon + _ammunition.Damage;
-            
+
             // Истребитель: +20% к урону, если атакует бомбардировщик
             if (attacker.Type == PlaneType.Fighter && enemyPlane.Type == PlaneType.Bomber)
             {
                 damage = (int)(damage * 1.2);
             }
-            
+
             // Определяем эффекты боеприпасов
             var isMarked = _ammunition.Type == AmmunitionType.Tracers;
             var disableEngine = _ammunition.Type == AmmunitionType.ExplosivePiercing;
-            
+
             enemyPlane.GetDamage(damage, Owner, isMarked, disableEngine);
-            
+
             if (isMarked)
             {
                 Console.WriteLine($"{Owner.GetName()} пометил цель {enemyPlane.GetName()}");
@@ -74,17 +74,17 @@ public class Weapon(WeaponType type, int minDamage, int maxDamage, int baseAccur
                 Console.WriteLine($"{Owner.GetName()} заглушил двигатель у {enemyPlane.GetName()}");
             }
         }
-        
+
         BomberSplashAttack(allEnemies);
     }
-    
+
     private bool IsHit(Plane enemyPlane)
     {
         if (Type == WeaponType.TurbineRockets)
         {
             return HandleTurbineRocketsHit();
         }
-        
+
         double markBonusPercent = enemyPlane.IsMarked ? 15 : 0;
 
         var totalAccuracyPercent =
@@ -92,12 +92,12 @@ public class Weapon(WeaponType type, int minDamage, int maxDamage, int baseAccur
             AccuracyPercent +
             markBonusPercent -
             enemyPlane.EffectiveEvasionChancePercent;
-        
+
         totalAccuracyPercent = Math.Clamp(totalAccuracyPercent, 0, 100);
 
         return Random.Shared.Next(100) <= totalAccuracyPercent;
     }
-    
+
     private bool HandleTurbineRocketsHit()
     {
         // Турбинные ракеты:
@@ -112,28 +112,28 @@ public class Weapon(WeaponType type, int minDamage, int maxDamage, int baseAccur
         _reloadStep = 1;
         return true;
     }
-    
+
     private void BomberSplashAttack(Plane[] allEnemies)
     {
         if (Owner is null)
         {
             throw new InvalidOperationException("Оружие не установлено на самолёт");
         }
-        
+
         var isBomber = Owner.Type == PlaneType.Bomber;
         var isSpacedArmor = Owner.Armor?.Type == ArmorType.SpacedArmor;
 
         if (isBomber || isSpacedArmor)
         {
             return;
-        }   
+        }
 
         const int chancePercent = 10;
         const int splashDamage = 15;
 
         if (Random.Shared.Next(100) >= chancePercent)
         {
-            return; 
+            return;
         }
 
         foreach (var enemy in allEnemies)
