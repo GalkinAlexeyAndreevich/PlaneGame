@@ -41,7 +41,7 @@ public class Plane(PlaneType type, int hp, int evasionChancePercent)
             return;
         }
         
-        if (Armor != null)
+        if (Armor is not null)
         {
             var defenceModifier = (100 - Armor.Defence) / 100.0;
             damage = (int)(damage * defenceModifier);

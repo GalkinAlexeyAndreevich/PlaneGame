@@ -113,7 +113,7 @@ public class Weapon(WeaponType type, int minDamage, int maxDamage, int baseAccur
         var isBomber = Owner.Type == PlaneType.Bomber;
         var isSpacedArmor = Owner.Armor?.Type == ArmorType.SpacedArmor;
 
-        if (isBomber || isSpacedArmor)
+        if (!isBomber || isSpacedArmor)
         {
             return;
         }
@@ -125,7 +125,8 @@ public class Weapon(WeaponType type, int minDamage, int maxDamage, int baseAccur
         {
             return;
         }
-
+        
+        Console.WriteLine($"{Owner.GetName()} сбрасывает бомбы на всех противников сразу");
         foreach (var enemy in allEnemies)
         {
             enemy.GetDamage(splashDamage, Owner);
