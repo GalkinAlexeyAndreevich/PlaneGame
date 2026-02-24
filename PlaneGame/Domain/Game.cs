@@ -39,9 +39,10 @@ public class Game()
             AddTeam(tactic);
         }
         
-        var currentStep = 0;
+        var currentStep = 1;
         while (IsAliveCount > 1 && currentStep < maxSteps)
         {
+            Console.WriteLine($"\n--{currentStep} ход--\n");
             foreach (var team in _teams)
             {
                 var enemyPlanes = _teams
@@ -66,18 +67,18 @@ public class Game()
 
         if (IsAliveCount > 1)
         {
-            Console.WriteLine($"Игра закончилась ничьей после {maxSteps} ходов");
+            Console.WriteLine($"\nИгра закончилась ничьей после {maxSteps} ходов");
             return;
         }
 
         if (IsAliveCount == 0)
         {
-            Console.WriteLine($"Игра закончилась ничьей уничтожением всех команд");
+            Console.WriteLine($"\nИгра закончилась ничьей уничтожением всех команд");
             return;
         }
 
         var lastTeam = _teams.First(t => t.IsAlive);
         
-        Console.WriteLine($"Победила команда {lastTeam.TeamId}");
+        Console.WriteLine($"\nПобедила команда Team{lastTeam.TeamId}");
     }
 }
