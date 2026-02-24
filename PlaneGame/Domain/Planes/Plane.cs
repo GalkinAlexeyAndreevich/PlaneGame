@@ -21,19 +21,13 @@ public class Plane(PlaneType type, int hp, int evasionChancePercent)
     public bool IsAlive => Hp > 0;
     
     public bool IsMarked { get; private set; }
-    public bool IsSkipNextTurn { get; private set; }
+    private bool _isSkipNextTurn;
     private bool _isFirstHitIgnored;
     
     // уклонение с учетом уклонения от брони
     public int EffectiveEvasionChancePercent => EvasionChancePercent + (Armor?.EvasionChangePercent ?? 0);
     
-    public Plane Clone() => new Plane(Type, Hp, EvasionChancePercent);
-
-    public void ResetTurnState()
-    {
-        IsMarked = false;
-        IsSkipNextTurn = false;
-    }
+    public Plane Clone() => new(Type, Hp, EvasionChancePercent);
 
     public void GetDamage(int damage, Plane enemyPlane, bool isMarked = false, bool disableEngine = false)
     {
@@ -59,7 +53,7 @@ public class Plane(PlaneType type, int hp, int evasionChancePercent)
         Console.WriteLine($"{enemyPlane.GetName()} нанес {_pendingDamage} урона по {GetName()}");
 
         if (isMarked) IsMarked = true;
-        if (disableEngine) IsSkipNextTurn = true;
+        if (disableEngine) _isSkipNextTurn = true;
     }
     
     public void ApplyTurnDamage()
@@ -73,6 +67,12 @@ public class Plane(PlaneType type, int hp, int evasionChancePercent)
 
     public void DoDamage(Plane enemyPlane, Plane[] allEnemies)
     {
+        if (_isSkipNextTurn)
+        {
+            _isSkipNextTurn =  false;
+            return;
+        }
+        
         _weapon?.DoDamage(enemyPlane, allEnemies);
     }
 
