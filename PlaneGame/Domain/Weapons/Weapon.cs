@@ -41,7 +41,6 @@ public class Weapon(WeaponType type, int minDamage, int maxDamage, int baseAccur
 
         // Крыльевые пушки стреляют по 2 выстрела
         var shotsCount = Type == WeaponType.WingGuns ? 2 : 1;
-
         for (var i = 0; i < shotsCount; i++)
         {
             if (!IsHit(enemyPlane))
@@ -64,15 +63,6 @@ public class Weapon(WeaponType type, int minDamage, int maxDamage, int baseAccur
             var disableEngine = _ammunition.Type == AmmunitionType.ExplosivePiercing;
 
             enemyPlane.GetDamage(damage, Owner, isMarked, disableEngine);
-
-            if (isMarked)
-            {
-                Console.WriteLine($"{Owner.GetName()} пометил цель {enemyPlane.GetName()}");
-            }
-            if (disableEngine)
-            {
-                Console.WriteLine($"{Owner.GetName()} заглушил двигатель у {enemyPlane.GetName()}");
-            }
         }
 
         BomberSplashAttack(allEnemies);

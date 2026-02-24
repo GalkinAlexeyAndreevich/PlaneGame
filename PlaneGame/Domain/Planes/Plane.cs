@@ -50,10 +50,18 @@ public class Plane(PlaneType type, int hp, int evasionChancePercent)
         
         _pendingDamage += damage;
         
-        Console.WriteLine($"{enemyPlane.GetName()} нанес {_pendingDamage} урона по {GetName()}");
-
-        if (isMarked) IsMarked = true;
-        if (disableEngine) _isSkipNextTurn = true;
+        Console.WriteLine($"{enemyPlane.GetName()} нанес {damage} урона по {GetName()}");
+        
+        if (isMarked)
+        {
+            IsMarked = true;
+            Console.WriteLine($"{enemyPlane.GetName()} пометил цель {GetName()}");
+        }
+        if (disableEngine)
+        {
+            _isSkipNextTurn = true;
+            Console.WriteLine($"{enemyPlane.GetName()} заглушил двигатель у {GetName()}");
+        }
     }
     
     public void ApplyTurnDamage()

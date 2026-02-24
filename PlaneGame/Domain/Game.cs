@@ -12,7 +12,7 @@ public class Game()
         for (var i = 0; i < CountInTeam; i++)
         {
             var plane = GameData.Planes[i].Clone();
-            plane.EquipRandom(GameData.Weapons,  GameData.Armors, GameData.Ammunition);
+            plane.EquipRandom(GameData.Weapons, GameData.Armors, GameData.Ammunition);
             planes.Add(plane);
         }
 
