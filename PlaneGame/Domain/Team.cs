@@ -26,8 +26,6 @@ public class Team(int teamId)
     
     public void DoDamage(Plane[] enemyPlanes)
     {
-        TeamTactic.BeginTurn(enemyPlanes);
-
         foreach (var plane in Planes)
         {
             if (!plane.IsAlive) continue;
