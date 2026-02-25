@@ -5,12 +5,12 @@ using PlaneGame.Extensions;
 
 namespace PlaneGame.Domain.Planes;
 
-public abstract class Plane
+public abstract class Plane(int hp, int evasionChancePercent)
 {
     public abstract PlaneType Type { get; }
-    public int MaxHp { get; }
-    public int Hp { get; private set; }
-    private int BaseEvasionChancePercent { get; }
+    public int MaxHp { get; } = hp;
+    public int Hp { get; private set; } = hp;
+    private int BaseEvasionChancePercent { get; } = evasionChancePercent;
 
     private Weapon? _weapon;
     public Armor? Armor;
@@ -22,17 +22,9 @@ public abstract class Plane
     
     public bool IsMarked { get; private set; }
     private bool _isSkipNextTurn;
-    private bool _isFirstHitIgnored;
     
     // уклонение с учетом уклонения от брони
     public int EffectiveEvasionChancePercent => BaseEvasionChancePercent + (Armor?.EvasionChangePercent ?? 0);
-    
-    protected Plane(int hp, int evasionChancePercent)
-    {
-        MaxHp = hp;
-        Hp = hp;
-        BaseEvasionChancePercent = evasionChancePercent;
-    }
     
     public abstract Plane Clone();
 
@@ -41,10 +33,8 @@ public abstract class Plane
         if (damage <= 0) return;
         
         // Штурмовик игнорирует первый удар за бой
-        if (Type == PlaneType.Attacker && !_isFirstHitIgnored)
+        if (TryIgnoreIncomingHit(enemyPlane))
         {
-            _isFirstHitIgnored = true;
-            Console.WriteLine($"Бронированная кабина {GetName()} поглотила удар {enemyPlane.GetName()}");
             return;
         }
         
@@ -64,12 +54,15 @@ public abstract class Plane
             IsMarked = true;
             Console.WriteLine($"{enemyPlane.GetName()} пометил цель {GetName()}");
         }
+        
         if (disableEngine)
         {
             _isSkipNextTurn = true;
             Console.WriteLine($"{enemyPlane.GetName()} заглушил двигатель у {GetName()}");
         }
     }
+    
+    protected virtual bool TryIgnoreIncomingHit(Plane enemyPlane) => false;
     
     public void ApplyTurnDamage()
     {
@@ -89,10 +82,16 @@ public abstract class Plane
         }
         
         _weapon?.DoDamage(enemyPlane, allEnemies);
+        
+        // Атака по всем
+        SplashAttack(allEnemies);
     }
     
     // Истребитель переопределит (+20% против бомбардировщика)
     public virtual int ModifyOutgoingDamage(Plane enemy, int damage) => damage;
+    
+    // Бомбардировщик переопределит (10% ударить по всем)
+    protected virtual void SplashAttack(Plane[] allEnemies) { }
 
     private void Equip(Weapon weapon, Armor armor, Ammunition ammunition)
     {

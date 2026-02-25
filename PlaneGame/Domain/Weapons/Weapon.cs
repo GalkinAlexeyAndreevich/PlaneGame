@@ -53,10 +53,7 @@ public class Weapon(WeaponType type, int minDamage, int maxDamage, int baseAccur
             var damage = damageWeapon + _ammunition.Damage;
 
             // Истребитель: +20% к урону, если атакует бомбардировщик
-            if (attacker.Type == PlaneType.Fighter && enemyPlane.Type == PlaneType.Bomber)
-            {
-                damage = (int)(damage * 1.2);
-            }
+            damage = attacker.ModifyOutgoingDamage(enemyPlane, damage);
 
             // Определяем эффекты боеприпасов
             var isMarked = _ammunition.Type == AmmunitionType.Tracers;
@@ -64,8 +61,6 @@ public class Weapon(WeaponType type, int minDamage, int maxDamage, int baseAccur
 
             enemyPlane.GetDamage(damage, Owner, isMarked, disableEngine);
         }
-
-        BomberSplashAttack(allEnemies);
     }
 
     private bool IsHit(Plane enemyPlane)
@@ -101,35 +96,5 @@ public class Weapon(WeaponType type, int minDamage, int maxDamage, int baseAccur
 
         _reloadStep = 1;
         return true;
-    }
-
-    private void BomberSplashAttack(Plane[] allEnemies)
-    {
-        if (Owner is null)
-        {
-            throw new InvalidOperationException("Оружие не установлено на самолёт");
-        }
-
-        var isBomber = Owner.Type == PlaneType.Bomber;
-        var isSpacedArmor = Owner.Armor?.Type == ArmorType.SpacedArmor;
-
-        if (!isBomber || isSpacedArmor)
-        {
-            return;
-        }
-
-        const int chancePercent = 10;
-        const int splashDamage = 15;
-
-        if (Random.Shared.Next(100) >= chancePercent)
-        {
-            return;
-        }
-        
-        Console.WriteLine($"{Owner.GetName()} сбрасывает бомбы на всех противников сразу");
-        foreach (var enemy in allEnemies)
-        {
-            enemy.GetDamage(splashDamage, Owner);
-        }
     }
 }

@@ -1,4 +1,4 @@
-using PlaneGame.Domain.Planes;
+namespace PlaneGame.Domain.Planes;
 
 public sealed class FighterPlane(): Plane(320, 25)
 {
