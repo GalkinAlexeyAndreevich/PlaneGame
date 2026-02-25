@@ -5,12 +5,12 @@ using PlaneGame.Extensions;
 
 namespace PlaneGame.Domain.Planes;
 
-public class Plane(PlaneType type, int hp, int evasionChancePercent)
+public abstract class Plane
 {
-    public PlaneType Type { get; } = type;
-    public int MaxHp { get; } = hp;
-    public int Hp { get; private set; } = hp;
-    private int EvasionChancePercent { get; } = evasionChancePercent;
+    public abstract PlaneType Type { get; }
+    public int MaxHp { get; }
+    public int Hp { get; private set; }
+    private int BaseEvasionChancePercent { get; }
 
     private Weapon? _weapon;
     public Armor? Armor;
@@ -25,9 +25,16 @@ public class Plane(PlaneType type, int hp, int evasionChancePercent)
     private bool _isFirstHitIgnored;
     
     // уклонение с учетом уклонения от брони
-    public int EffectiveEvasionChancePercent => EvasionChancePercent + (Armor?.EvasionChangePercent ?? 0);
+    public int EffectiveEvasionChancePercent => BaseEvasionChancePercent + (Armor?.EvasionChangePercent ?? 0);
     
-    public Plane Clone() => new(Type, Hp, EvasionChancePercent);
+    protected Plane(int hp, int evasionChancePercent)
+    {
+        MaxHp = hp;
+        Hp = hp;
+        BaseEvasionChancePercent = evasionChancePercent;
+    }
+    
+    public abstract Plane Clone();
 
     public void GetDamage(int damage, Plane enemyPlane, bool isMarked = false, bool disableEngine = false)
     {
@@ -83,6 +90,9 @@ public class Plane(PlaneType type, int hp, int evasionChancePercent)
         
         _weapon?.DoDamage(enemyPlane, allEnemies);
     }
+    
+    // Истребитель переопределит (+20% против бомбардировщика)
+    public virtual int ModifyOutgoingDamage(Plane enemy, int damage) => damage;
 
     private void Equip(Weapon weapon, Armor armor, Ammunition ammunition)
     {

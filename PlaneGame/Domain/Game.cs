@@ -11,7 +11,8 @@ public class Game()
         List<Plane> planes = [];
         for (var i = 0; i < CountInTeam; i++)
         {
-            var plane = GameData.Planes[i].Clone();
+            var maxIndex = GameData.Planes.Length - 1;
+            var plane = GameData.Planes[maxIndex].Clone();
             plane.EquipRandom(GameData.Weapons, GameData.Armors, GameData.Ammunition);
             planes.Add(plane);
         }

@@ -9,9 +9,9 @@ public static class GameData
 {
     public static readonly Plane[] Planes =
     [
-        new Plane(PlaneType.Fighter, 320, 25),
-        new Plane(PlaneType.Attacker, 480, 10),
-        new Plane(PlaneType.Bomber, 680, 5)
+        new FighterPlane(),
+        // new Plane(PlaneType.Attacker, 480, 10),
+        // new Plane(PlaneType.Bomber, 680, 5)
     ];
 
     public static readonly Weapon[] Weapons =
