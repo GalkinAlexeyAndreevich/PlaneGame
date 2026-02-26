@@ -1,5 +1,4 @@
 ﻿using PlaneGame.Domain.Ammo;
-using PlaneGame.Domain.Armors;
 using PlaneGame.Domain.Planes;
 
 namespace PlaneGame.Domain.Weapons;

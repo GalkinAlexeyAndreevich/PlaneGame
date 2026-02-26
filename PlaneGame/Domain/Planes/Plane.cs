@@ -13,7 +13,7 @@ public abstract class Plane(int hp, int evasionChancePercent)
     private int BaseEvasionChancePercent { get; } = evasionChancePercent;
 
     private Weapon? _weapon;
-    public Armor? Armor;
+    protected Armor? Armor;
 
     public int TeamId;
     /// <summary>Отложенный урон, в конце хода вычитается из hp.</summary>
@@ -87,10 +87,10 @@ public abstract class Plane(int hp, int evasionChancePercent)
         SplashAttack(allEnemies);
     }
     
-    // Истребитель переопределит (+20% против бомбардировщика)
+    // Метод для истребителя (+20% против бомбардировщика)
     public virtual int ModifyOutgoingDamage(Plane enemy, int damage) => damage;
     
-    // Бомбардировщик переопределит (10% ударить по всем)
+    // Метод для бомбардировщика (10% ударить по всем)
     protected virtual void SplashAttack(Plane[] allEnemies) { }
 
     private void Equip(Weapon weapon, Armor armor, Ammunition ammunition)

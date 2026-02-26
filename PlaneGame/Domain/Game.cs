@@ -1,8 +1,9 @@
 using PlaneGame.Domain.Planes;
+using PlaneGame.Domain.Tactics;
 
 namespace PlaneGame.Domain;
 
-public class Game()
+public class Game
 {
     private readonly List<Team> _teams = [];
     private const int CountInTeam = 3;

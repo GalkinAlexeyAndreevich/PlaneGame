@@ -1,3 +1,4 @@
+using PlaneGame.Domain.Tactics;
 using PlaneGame.Extensions;
 
 namespace PlaneGame;

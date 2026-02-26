@@ -1,5 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 
+namespace PlaneGame.Domain.Tactics;
+
 public enum TacticType
 {
     [Display(Name = "Приказ командира")]
