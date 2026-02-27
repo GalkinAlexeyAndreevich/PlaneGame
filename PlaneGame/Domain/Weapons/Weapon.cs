@@ -15,27 +15,25 @@ public class Weapon(WeaponType type, double weight, int minDamage, int maxDamage
     /// <summary>Самолёт, на котором установлено оружие. Устанавливается при экипировке.</summary>
     public Plane? Owner { get; internal set; }
 
-    private Ammunition? _ammunition;
-
     private int _reloadStep;
 
     public Weapon Clone() => new(Type, Weight, MinDamage, MaxDamage, BaseAccuracyPercent, AccuracyPercent);
 
-    internal void EquipAmmunition(Ammunition ammunition)
+    public bool CanUseAmmunition(Ammunition ammunition)
     {
-        _ammunition = ammunition;
+        var isTurbineRockets = Type == WeaponType.TurbineRockets;
+        var isTracers = ammunition.Type == AmmunitionType.Tracers;
+        
+        if (isTurbineRockets && isTracers) return false;
+        return true;
     }
 
     internal void DoDamage(Plane enemyPlane)
     {
-        if (Owner is null)
-        {
-            throw new InvalidOperationException("Оружие не установлено на самолёт");
-        }
-        if (_ammunition is null)
-        {
-            throw new InvalidOperationException("Не экипированы боеприпасы");
-        }
+        if (Owner is null) return;
+
+        var ammo = Owner.Inventory.TryTakeAmmunitionOnWeapon(this);
+        if (ammo is null) return;
 
         var attacker = Owner;
 
@@ -50,16 +48,7 @@ public class Weapon(WeaponType type, double weight, int minDamage, int maxDamage
             }
 
             var damageWeapon = Random.Shared.Next(MinDamage, MaxDamage);
-            var damage = damageWeapon + _ammunition.Damage;
-
-            // Истребитель: +20% к урону, если атакует бомбардировщик
-            damage = attacker.ModifyOutgoingDamage(enemyPlane, damage);
-
-            // Определяем эффекты боеприпасов
-            var isMarked = _ammunition.Type == AmmunitionType.Tracers;
-            var disableEngine = _ammunition.Type == AmmunitionType.ExplosivePiercing;
-
-            enemyPlane.GetDamage(damage, Owner, isMarked, disableEngine);
+            ammo.ShootOnEnemy(damageWeapon, attacker, enemyPlane);
         }
     }
 
