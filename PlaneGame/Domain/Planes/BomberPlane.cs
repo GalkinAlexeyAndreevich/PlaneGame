@@ -2,7 +2,7 @@ using PlaneGame.Domain.Armors;
 
 namespace PlaneGame.Domain.Planes;
 
-public sealed class BomberPlane() : Plane(680, 5)
+public sealed class BomberPlane() : Plane(680, 1000, 5)
 {
     public override PlaneType Type => PlaneType.Bomber;
 
@@ -11,7 +11,7 @@ public sealed class BomberPlane() : Plane(680, 5)
     protected override void SplashAttack(Plane[] allEnemies)
     {
         // Бомбардировщик с разнесенной броней теряет способность к площадной бомбежке
-        if (Armor?.Type == ArmorType.SpacedArmor)
+        if (Inventory.Armor?.Type == ArmorType.SpacedArmor)
         {
             return;
         }

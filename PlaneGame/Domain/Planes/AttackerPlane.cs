@@ -1,6 +1,6 @@
 namespace PlaneGame.Domain.Planes;
 
-public sealed class AttackerPlane() : Plane(480, 10)
+public sealed class AttackerPlane() : Plane(480, 700, 10)
 {
     public override PlaneType Type => PlaneType.Attacker;
 

@@ -1,6 +1,9 @@
 using PlaneGame.Domain.Ammo;
 using PlaneGame.Domain.Armors;
+using PlaneGame.Domain.Planes;
 using PlaneGame.Domain.Weapons;
+
+namespace PlaneGame.Domain.UnitInventory;
 
 public class Inventory(double maxWeight)
 {
@@ -23,11 +26,12 @@ public class Inventory(double maxWeight)
         return GetWeight() + weight <= MaxWeight;
     }
 
-    public bool EquipWeapon(Weapon newWeapon)
+    public bool EquipWeapon(Weapon newWeapon, Plane owner)
     {
         if(!IsCanEquipNewItem(newWeapon.Weight)) return false;
         
         Weapons.Add(newWeapon);
+        newWeapon.Owner = owner;
         return true;
     }
     
@@ -43,7 +47,19 @@ public class Inventory(double maxWeight)
     {
         if(!IsCanEquipNewItem(newAmmunition.Weight)) return false;
         
+        // Турбинные ракеты не могут стрелять трассирующими боеприпасами
+        // TODO: если оружий больше 1, можно взять, но не стрелять именно с этого оружия этими боеприпасами
+        var isTurbineRockets = Weapons.Exists(w => w.Type == WeaponType.TurbineRockets);
+        var isTracers = newAmmunition.Type == AmmunitionType.Tracers;
+        
+        if (isTurbineRockets && isTracers) return false;
+        
         Ammunition.Add(newAmmunition);
         return true;
+    }
+
+    public Ammunition? TryTakeAmmunitionOnWeapon(Weapon weapon)
+    {
+        return Ammunition.FirstOrDefault(weapon.CanUseAmmunition);
     }
 }
