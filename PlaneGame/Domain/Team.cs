@@ -5,17 +5,17 @@ namespace PlaneGame.Domain;
 
 public class Team(int teamId)
 {
-    public int TeamId { get; set; } =  teamId;
+    public int TeamId { get; } =  teamId;
     public Plane[] Planes { get; private set; } = [];
     
     private Tactic TeamTactic { get; } = new Tactic(TacticType.HuntOnLeader);
 
     public void AddPlanesToTeam(Plane[] planes)
     {
-        Planes =  planes;
+        Planes = planes;
         foreach (var plane in planes)
         {
-            plane.TeamId = TeamId;
+            plane.AssignToTeam(TeamId);
         }
     }
 

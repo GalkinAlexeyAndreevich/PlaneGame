@@ -15,7 +15,9 @@ public abstract class Plane(int hp, int evasionChancePercent)
     private Weapon? _weapon;
     protected Armor? Armor;
 
-    public int TeamId;
+    public int TeamId { get; private set; }
+
+
     /// <summary>Отложенный урон, в конце хода вычитается из hp.</summary>
     private int _pendingDamage;
     public bool IsAlive => Hp > 0;
@@ -28,15 +30,17 @@ public abstract class Plane(int hp, int evasionChancePercent)
     
     public abstract Plane Clone();
 
+    internal void AssignToTeam(int teamId)
+    {
+        TeamId = teamId;
+    }
+
     public void GetDamage(int damage, Plane enemyPlane, bool isMarked = false, bool disableEngine = false)
     {
         if (damage <= 0) return;
         
         // Штурмовик игнорирует первый удар за бой
-        if (TryIgnoreIncomingHit(enemyPlane))
-        {
-            return;
-        }
+        if (TryIgnoreIncomingHit(enemyPlane)) return;
         
         if (Armor is not null)
         {
@@ -77,11 +81,11 @@ public abstract class Plane(int hp, int evasionChancePercent)
     {
         if (_isSkipNextTurn)
         {
-            _isSkipNextTurn =  false;
+            _isSkipNextTurn = false;
             return;
         }
         
-        _weapon?.DoDamage(enemyPlane, allEnemies);
+        _weapon?.DoDamage(enemyPlane);
         
         // Атака по всем
         SplashAttack(allEnemies);
