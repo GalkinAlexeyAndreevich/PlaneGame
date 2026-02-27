@@ -16,22 +16,22 @@ public static class GameData
 
     public static readonly Weapon[] Weapons =
     [
-        new Weapon(WeaponType.SyncMachineGuns, 10, 15, 70, 15),
-        new Weapon(WeaponType.WingGuns, 20, 30, 70, -10),
-        new Weapon(WeaponType.TurbineRockets, 35, 40, 70, 0),
+        new Weapon(WeaponType.SyncMachineGuns,150, 10, 15, 70, 15),
+        new Weapon(WeaponType.WingGuns, 200,20, 30, 70, -10),
+        new Weapon(WeaponType.TurbineRockets, 230, 35, 40, 70, 0),
     ];
 
     public static readonly Armor[] Armors =
     [
-        new Armor(ArmorType.ProtectedGasTank, 15),
-        new Armor(ArmorType.PilotArmorPlate, 20),
-        new Armor(ArmorType.SpacedArmor, 25, -10),
+        new Armor(ArmorType.ProtectedGasTank, 300, 15),
+        new Armor(ArmorType.PilotArmorPlate, 310, 20),
+        new Armor(ArmorType.SpacedArmor,  25,-10),
     ];
 
     public static readonly Ammunition[] Ammunition =
     [
-        new Ammunition(AmmunitionType.Tracers, 12),
-        new Ammunition(AmmunitionType.ArmorPiercing, 10),
-        new Ammunition(AmmunitionType.ExplosivePiercing, 18)
+        new Ammunition(AmmunitionType.Tracers, 1.5, 12),
+        new Ammunition(AmmunitionType.ArmorPiercing, 0.8, 10),
+        new Ammunition(AmmunitionType.ExplosivePiercing, 2.4,18)
     ];
 }

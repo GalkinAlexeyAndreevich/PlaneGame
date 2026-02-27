@@ -3,9 +3,10 @@ using PlaneGame.Domain.Planes;
 
 namespace PlaneGame.Domain.Weapons;
 
-public class Weapon(WeaponType type, int minDamage, int maxDamage, int baseAccuracyPercent, int accuracyPercent)
+public class Weapon(WeaponType type, double weight, int minDamage, int maxDamage, int baseAccuracyPercent, int accuracyPercent)
 {
     public WeaponType Type { get; } = type;
+    public double Weight { get; } = weight;
     private int MinDamage { get; } = minDamage;
     private int MaxDamage { get; } = maxDamage;
     private int BaseAccuracyPercent { get; } = baseAccuracyPercent;
@@ -18,7 +19,7 @@ public class Weapon(WeaponType type, int minDamage, int maxDamage, int baseAccur
 
     private int _reloadStep;
 
-    public Weapon Clone() => new(Type, MinDamage, MaxDamage, BaseAccuracyPercent, AccuracyPercent);
+    public Weapon Clone() => new(Type, Weight, MinDamage, MaxDamage, BaseAccuracyPercent, AccuracyPercent);
 
     internal void EquipAmmunition(Ammunition ammunition)
     {

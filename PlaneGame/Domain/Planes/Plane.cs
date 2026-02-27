@@ -17,7 +17,6 @@ public abstract class Plane(int hp, int evasionChancePercent)
 
     public int TeamId { get; private set; }
 
-
     /// <summary>Отложенный урон, в конце хода вычитается из hp.</summary>
     private int _pendingDamage;
     public bool IsAlive => Hp > 0;
