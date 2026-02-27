@@ -48,8 +48,9 @@ public class Game
             Console.WriteLine($"\n--{currentStep} ход--\n");
             foreach (var team in _teams)
             {
+                if (!team.IsAlive) continue;
                 var enemyPlanes = _teams
-                    .Where(t => t.TeamId != team.TeamId && team.IsAlive)
+                    .Where(t => t.TeamId != team.TeamId && t.IsAlive)
                     .SelectMany(t => t.Planes)
                     .ToArray();
                 if(enemyPlanes.Length == 0) continue;
