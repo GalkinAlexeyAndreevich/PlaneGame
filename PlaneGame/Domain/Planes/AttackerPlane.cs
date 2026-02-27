@@ -10,10 +10,7 @@ public sealed class AttackerPlane() : Plane(480, 10)
 
     protected override bool TryIgnoreIncomingHit(Plane enemyPlane)
     {
-        if (_isFirstHitIgnored)
-        {
-            return false;
-        }
+        if (_isFirstHitIgnored) return false;
         
         _isFirstHitIgnored = true;
         Console.WriteLine($"Бронированная кабина {GetName()} поглотила удар {enemyPlane.GetName()}");

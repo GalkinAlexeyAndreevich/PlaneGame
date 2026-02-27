@@ -25,7 +25,7 @@ public class Weapon(WeaponType type, int minDamage, int maxDamage, int baseAccur
         _ammunition = ammunition;
     }
 
-    internal void DoDamage(Plane enemyPlane, Plane[] allEnemies)
+    internal void DoDamage(Plane enemyPlane)
     {
         if (Owner is null)
         {
